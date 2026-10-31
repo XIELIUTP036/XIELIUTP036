@@ -20,7 +20,7 @@ build.py          讀 data.csv → 寫回 index.html 的資料、<noscript> 名�
 site.json         網站設定：base_url（正式網址）、report_url（回報缺漏名詞表單）
 favicon.svg、apple-touch-icon.png、og.png   網站圖示與社群分享預覽圖（tools/make_images.js 產生）
 .github/workflows/pages.yml   推送到 main 自動部署 GitHub Pages（只部署網站檔案，不含 source/、docs/、data.csv）
-source/           原始心智圖（.xmind）與截圖
+source/           原始心智圖（.xmind）與截圖——**不放進 GitHub 倉庫**（.gitignore 排除；2026-10-31 前的提交紀錄裡仍有），只存在使用者本機
 tools/xmind_tree.py   把 .xmind 印成縮排文字樹，方便對照資料
 docs/             設計、資料模型、決策紀錄、待辦
 ```

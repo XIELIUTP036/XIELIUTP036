@@ -1,5 +1,5 @@
 # 推送到 main 分支時：檢查資料 → 只把網站需要的檔案部署到 GitHub Pages
-# （source/ 心智圖、docs/、data.csv 等不會公開在網站上）
+# （docs/、data.csv 等不會公開在網站上；ubuntu-latest 內建 python3，不需另外安裝）
 name: 部署到 GitHub Pages
 
 on:
@@ -24,10 +24,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
 
       - name: 檢查資料與頁面是否為最新
         run: python3 build.py --check
