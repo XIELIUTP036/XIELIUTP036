@@ -20,7 +20,7 @@
 - [x] `sitemap.xml`、`robots.txt`、`DefinedTerm` JSON-LD 改為建置時輸出、favicon、社群分享預覽圖（2026-10-31）。
 - [ ] 預先渲染名詞內容到 HTML（目前 noscript 有名詞＋簡述列表）。
 - [ ] 搜尋關鍵字與分類放進網址（query string）。
-- [ ] 部署：使用者選 **GitHub Pages**，先用免費網址（2026-10-31）。倉庫 `XIELIUTP036/XIELIUTP036` 已推送；**待使用者在 Settings → Pages 把 Source 設為 GitHub Actions**。網址 https://xieliutp036.github.io/XIELIUTP036/自訂網域之後再說。
+- [x] 部署：使用者選 **GitHub Pages**，先用免費網址（2026-10-31）。倉庫 `XIELIUTP036/XIELIUTP036` 已推送；**2026-10-31 已上線**。網址 https://xieliutp036.github.io/XIELIUTP036/自訂網域之後再說。
 - [ ] 流量分析（熱門搜尋關鍵字、無結果關鍵字，用來決定下一批要補的名詞）。
 - [ ] 「回報缺漏名詞」表單：頁尾連結已做好（site.json 的 report_url），**待使用者提供 Google 表單網址**。
 - [ ] 隱私權政策（若有蒐集資料）。
