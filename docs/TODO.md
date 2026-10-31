@@ -17,17 +17,18 @@
 
 ## C. 正式上線（託管環境做不到、需自己的主機）
 - [ ] 每個名詞獨立頁面（SSG：可用 Astro / Eleventy / 純 Python 產生）＋乾淨網址。
-- [ ] `sitemap.xml`、`robots.txt`、預先渲染的內容與 `DefinedTerm` JSON-LD（改成建置時輸出，不靠 JS 注入）。
+- [x] `sitemap.xml`、`robots.txt`、`DefinedTerm` JSON-LD 改為建置時輸出、favicon、社群分享預覽圖（2026-10-31）。
+- [ ] 預先渲染名詞內容到 HTML（目前 noscript 有名詞＋簡述列表）。
 - [ ] 搜尋關鍵字與分類放進網址（query string）。
-- [ ] 部署：GitHub Pages / Cloudflare Pages / Netlify；自訂網域、HTTPS。
+- [ ] 部署：使用者選 **GitHub Pages**，先用免費網址（2026-10-31）。自動部署流程已建好，**待使用者提供 GitHub 倉庫**。自訂網域之後再說。
 - [ ] 流量分析（熱門搜尋關鍵字、無結果關鍵字，用來決定下一批要補的名詞）。
-- [ ] 「回報缺漏名詞」表單（Google 表單連結即可，最省事）。
+- [ ] 「回報缺漏名詞」表單：頁尾連結已做好（site.json 的 report_url），**待使用者提供 Google 表單網址**。
 - [ ] 隱私權政策（若有蒐集資料）。
 - [ ] 字體自行託管子集，減少外部相依與載入時間。
 
 ## D. 工程改善（選配）
 - [ ] 把 CSS／JS 拆成獨立檔案，加版本控制與簡單測試（資料驗證、build 往返一致性）。
-- [ ] `build.py` 加 `--check`（只驗證不寫入），可放進 CI。
+- [x] `build.py` 加 `--check`（只驗證不寫入），已放進 GitHub Actions（2026-10-31）。
 - [ ] 資料量增加後，搜尋改為局部更新或虛擬捲動（目前 122 筆無效能問題）。
 - [ ] 實機測試：iPhone Safari、Android Chrome、桌機 Chrome／Safari（舊 iOS 對 `color-mix()`、`line-clamp` 的支援）。
 - [ ] 同義詞表擴充（`SYN` 在 index.html 內），或移到 CSV。

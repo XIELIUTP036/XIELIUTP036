@@ -1,17 +1,21 @@
-# 推上 main 分支後，自動把網站部署到 GitHub Pages。
-# 只發布 index.html（心智圖原檔、CSV、docs 不放上網站）。
+# 推送到 main 分支時：檢查資料 → 只把網站需要的檔案部署到 GitHub Pages
+# （source/ 心智圖、docs/、data.csv 等不會公開在網站上）
 name: 部署到 GitHub Pages
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
 concurrency:
   group: pages
   cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -20,24 +24,27 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: 檢查資料與頁面一致（不改日期）
-        run: |
-          cp index.html /tmp/check.html
-          python3 build.py data.csv /tmp/check.html
-          python3 - <<'PY'
-          import re
-          g=lambda p:re.search(r'id="glossary-data">(.*?)</script>',open(p,encoding='utf-8').read(),re.S).group(1)
-          assert g('index.html')==g('/tmp/check.html'),'data.csv 與 index.html 不一致：請先在本機執行 python3 build.py 再推上來'
-          print('資料一致')
-          PY
-      - name: 準備網站檔案
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 檢查資料與頁面是否為最新
+        run: python3 build.py --check
+
+      - name: 組合網站檔案
         run: |
           mkdir _site
-          cp index.html _site/
-          touch _site/.nojekyll
+          for f in index.html favicon.svg apple-touch-icon.png og.png robots.txt sitemap.xml; do
+            if [ -f "$f" ]; then cp "$f" _site/; fi
+          done
+          ls -la _site
+
       - uses: actions/configure-pages@v5
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+
       - id: deployment
         uses: actions/deploy-pages@v4

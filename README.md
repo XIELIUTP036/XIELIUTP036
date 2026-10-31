@@ -10,7 +10,21 @@ python3 -m http.server 8000   # 開啟 http://localhost:8000
 ## 更新名詞（給維護者）
 1. 用 Excel 或 Google 試算表開啟 `data.csv`，新增或修改名詞，存檔時選「CSV UTF-8」。
 2. 執行 `python3 build.py`，會更新 `index.html` 內的資料、noscript 名詞列表與最後更新日期。
-3. 把 `index.html` 上傳到 GitHub Pages / Cloudflare Pages / Netlify。
+3. 推送到 GitHub 的 `main` 分支，GitHub Actions 會自動檢查並部署到 GitHub Pages。
+
+## 網站設定（site.json）
+| 欄位 | 說明 |
+|---|---|
+| base_url | 正式網址，例 `https://帳號.github.io/倉庫名`。設定後才會產生 sitemap.xml 與分享用的網址標籤 |
+| report_url | 「回報缺漏名詞」表單網址（Google 表單）。留空則頁尾不顯示連結 |
+
+改完 site.json 要再執行一次 `python3 build.py`。
+
+## 第一次部署到 GitHub Pages
+1. 在 GitHub 建立倉庫，把這個資料夾推送到 `main`。
+2. 倉庫 Settings → Pages → Build and deployment → Source 選「GitHub Actions」。
+3. 之後每次推送到 `main` 就會自動更新網站（約 1 分鐘）。
+4. 到 Google Search Console 新增網站並提交 `sitemap.xml`。
 
 ### 欄位
 | 欄位 | 說明 |

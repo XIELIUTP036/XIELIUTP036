@@ -15,7 +15,10 @@
 ```
 index.html        頁面本體（HTML+CSS+JS，資料內嵌於 <script id="glossary-data">）
 data.csv          名詞資料的「唯一事實來源」，用 Excel/試算表編輯（UTF-8 BOM）
-build.py          讀 data.csv → 寫回 index.html 的資料、<noscript> 名詞列表、最後更新日期
+build.py          讀 data.csv → 寫回 index.html 的資料、<noscript> 名詞列表、最後更新日期、SEO 標籤、回報連結；產生 sitemap.xml、robots.txt
+site.json         網站設定：base_url（正式網址）、report_url（回報缺漏名詞表單）
+favicon.svg、apple-touch-icon.png、og.png   網站圖示與社群分享預覽圖（tools/make_images.js 產生）
+.github/workflows/pages.yml   推送到 main 自動部署 GitHub Pages（只部署網站檔案，不含 source/、docs/、data.csv）
 source/           原始心智圖（.xmind）與截圖
 tools/xmind_tree.py   把 .xmind 印成縮排文字樹，方便對照資料
 docs/             設計、資料模型、決策紀錄、待辦
@@ -24,6 +27,8 @@ docs/             設計、資料模型、決策紀錄、待辦
 ## 常用指令
 ```bash
 python3 build.py                 # 更新資料與「最後更新日期」（日期取當天）
+python3 build.py --check         # 只檢查不寫入（GitHub Actions 部署前會跑；改了 CSV 卻沒 build 會擋下部署）
+node tools/make_images.js        # 重新產生 apple-touch-icon.png、og.png（改圖示或網站描述時）
 python3 tools/xmind_tree.py source/產險名詞大補帖.xmind   # 檢視心智圖結構
 python3 -m http.server 8000      # 本機預覽（或直接開 index.html）
 ```
@@ -58,7 +63,8 @@ CSV 欄位：`id, 分類, 區塊, 群組標籤, 名詞, 別名, 簡述, 完整�
 
 ## 已知待辦與待使用者決定（詳見 docs/TODO.md）
 - 三張「（內容建置中）」卡片（健康傷害險、工程險、水險/運輸險）：使用者決定先照目前樣式顯示，之後再補內容。
-- 若正式上線：做每個名詞獨立頁面、sitemap.xml、robots.txt、預先渲染（SSG）、自訂網域、流量分析、回報表單。
+- 正式上線（2026-10-31 開始）：使用者選 GitHub Pages、先用免費網址；第一階段做基本 SEO＋回報缺漏名詞連結。待使用者提供 GitHub 倉庫與 Google 表單網址。
+- 之後可做：每個名詞獨立頁面、自訂網域、流量分析、字體自行託管。
 
 ## 工作方式偏好
 - 使用者偏好小步迭代：每次改一組項目，改完說明「改了什麼、哪裡沒動、有何不確定」。
