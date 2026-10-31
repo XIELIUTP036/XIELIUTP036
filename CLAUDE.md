@@ -7,6 +7,7 @@
 - **主要功能是「教學」**：內容要反覆閱讀，所以不加浮水印、不做會干擾閱讀的裝飾。
 - 版面參考「保險克勞斯」的名詞百科頁（只參考版面結構，不使用其名稱、Logo 與文案）。
 - 內容來源是使用者自己的心智圖 `source/產險名詞大補帖.xmind`（附 `source/mindmap-*.jpeg|png` 截圖）。
+- **正式網站**：https://xieliutp036.github.io/XIELIUTP036/ （GitHub 倉庫 `XIELIUTP036/XIELIUTP036`，推送 `main` 自動部署）
 - 目前為單一靜態頁（無框架、無建置工具），已用 Claude 的 artifact 託管預覽過：
   - https://claude.ai/artifact/2dRPKWLMfLRZVUNotfiaUc（最新，2026-10-31，內容同 `index.html`）
   - https://claude.ai/artifact/TuzjbjE6y6rAgMnVmhfLo4（舊版，聊天室建立）
@@ -63,7 +64,7 @@ CSV 欄位：`id, 分類, 區塊, 群組標籤, 名詞, 別名, 簡述, 完整�
 
 ## 已知待辦與待使用者決定（詳見 docs/TODO.md）
 - 三張「（內容建置中）」卡片（健康傷害險、工程險、水險/運輸險）：使用者決定先照目前樣式顯示，之後再補內容。
-- 正式上線（2026-10-31 開始）：使用者選 GitHub Pages、先用免費網址；第一階段做基本 SEO＋回報缺漏名詞連結。待使用者提供 GitHub 倉庫與 Google 表單網址。
+- 正式上線（2026-10-31 開始）：使用者選 GitHub Pages、先用免費網址；第一階段做基本 SEO＋回報缺漏名詞連結。倉庫已推送（2026-10-31）；待使用者在 Settings → Pages 選 GitHub Actions、提供 Google 表單網址。
 - 之後可做：每個名詞獨立頁面、自訂網域、流量分析、字體自行託管。
 
 ## 工作方式偏好
