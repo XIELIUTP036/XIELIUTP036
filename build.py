@@ -3,7 +3,7 @@
   python3 build.py            讀 data.csv → 更新 index.html（資料、noscript 名詞列表、最後更新日期、SEO 標籤、回報連結）
                               並產生 sitemap.xml、robots.txt
   python3 build.py --check    只驗證資料與檢查 index.html 是否已是最新，不寫入任何檔案（CI 用）
-網站設定在 site.json：base_url（正式網址，例 https://帳號.github.io/repo）、report_url（回報缺漏名詞表單網址）。"""
+網站設定在 site.json：base_url（正式網址，例 https://帳號.github.io/repo）、report_url（回報缺漏名詞表單網址）、google_site_verification（Search Console 驗證碼）。"""
 import csv, json, re, sys, html, datetime, os
 
 CHECK = '--check' in sys.argv
@@ -17,6 +17,7 @@ if os.path.exists(os.path.join(ROOT, 'site.json')):
     site = json.load(open(os.path.join(ROOT, 'site.json'), encoding='utf-8'))
 BASE = (site.get('base_url') or '').strip().rstrip('/')
 REPORT = (site.get('report_url') or '').strip()
+GSV = (site.get('google_site_verification') or '').strip()
 
 h = open(PAGE, encoding='utf-8').read()
 m = re.search(r'(<script type="application/json" id="glossary-data">)(.*?)(</script>)', h, re.S)
@@ -67,6 +68,9 @@ seo = ['<link rel="icon" href="favicon.svg" type="image/svg+xml">',
        '<meta property="og:site_name" content="產險懶人包">',
        '<meta property="og:locale" content="zh_TW">',
        '<meta name="twitter:card" content="summary_large_image">']
+if GSV:
+    if not re.fullmatch(r'[A-Za-z0-9_-]+', GSV): sys.exit('site.json：google_site_verification 只能是驗證碼本身（content="…" 引號內的文字）')
+    seo.append(f'<meta name="google-site-verification" content="{GSV}">')
 if BASE:
     seo += [f'<link rel="canonical" href="{BASE}/">',
             f'<meta property="og:url" content="{BASE}/">',

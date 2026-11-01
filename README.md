@@ -17,6 +17,7 @@ python3 -m http.server 8000   # 開啟 http://localhost:8000
 |---|---|
 | base_url | 正式網址，例 `https://帳號.github.io/倉庫名`。設定後才會產生 sitemap.xml 與分享用的網址標籤 |
 | report_url | 「回報缺漏名詞」表單網址（Google 表單）。留空則頁尾不顯示連結 |
+| google_site_verification | Google Search Console 驗證碼（HTML 標記 content 引號內的文字）。**驗證後也不要刪**，刪了會失去驗證 |
 
 改完 site.json 要再執行一次 `python3 build.py`。
 
