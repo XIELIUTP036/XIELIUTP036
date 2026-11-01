@@ -197,7 +197,7 @@ function chips(){
   requestAnimationFrame(edges);
 }
 function nm(n){const m=n.match(/^((?=[0-9A-Z.\/]*[0-9])[0-9A-Z.\/]{1,8})\s+(.+)$/);return m?`<span class="code">${hl(m[1])}</span><span>${hl(m[2])}</span>`:hl(n)}
-const KV=/^(理賠對象|理賠項目|承保範圍|自負額|啟動時間點|投保限制|保障範圍|加值選|承保對象)：([\s\S]*)$/;
+const KV=/^(理賠對象|理賠項目|承保範圍|自負額|啟動時間點|投保限制|保障範圍|保障項目|服務項目|加值選|承保對象)：([\s\S]*)$/;
 function det(d){
   const it=[];
   d.split("\n").forEach(l=>{const m=l.match(/^(\u3000*)・([\s\S]*)$/);if(m)it.push({dep:m[1].length,t:m[2]});else if(it.length)it[it.length-1].t+="\n"+l.replace(/^\u3000+/,"")});
