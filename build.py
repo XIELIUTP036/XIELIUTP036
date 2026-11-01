@@ -3,7 +3,7 @@
   python3 build.py            讀 data.csv → 更新 index.html（資料、noscript 名詞列表、最後更新日期、SEO 標籤、回報連結）
                               並產生 sitemap.xml、robots.txt
   python3 build.py --check    只驗證資料與檢查 index.html 是否已是最新，不寫入任何檔案（CI 用）
-網站設定在 site.json：base_url（正式網址，例 https://帳號.github.io/repo）、report_url（回報缺漏名詞表單網址）、google_site_verification（Search Console 驗證碼）、goatcounter（流量分析代碼）。"""
+網站設定在 site.json：base_url（正式網址，例 https://帳號.github.io/repo）、report_url（回報缺漏名詞表單網址）、google_site_verification（Search Console 驗證碼）、noindex（true＝不讓搜尋引擎收錄）、goatcounter（流量分析代碼）。"""
 import csv, json, re, sys, html, datetime, os
 
 CHECK = '--check' in sys.argv
@@ -18,6 +18,7 @@ if os.path.exists(os.path.join(ROOT, 'site.json')):
 BASE = (site.get('base_url') or '').strip().rstrip('/')
 REPORT = (site.get('report_url') or '').strip()
 GSV = (site.get('google_site_verification') or '').strip()
+NOINDEX = bool(site.get('noindex'))   # true：不讓搜尋引擎收錄（團隊內部使用）
 GC = (site.get('goatcounter') or '').strip()
 
 h = open(PAGE, encoding='utf-8').read()
@@ -69,6 +70,8 @@ seo = ['<link rel="icon" href="favicon.svg" type="image/svg+xml">',
        '<meta property="og:site_name" content="產險懶人包">',
        '<meta property="og:locale" content="zh_TW">',
        '<meta name="twitter:card" content="summary_large_image">']
+if NOINDEX:
+    seo.append('<meta name="robots" content="noindex, nofollow, noarchive">')
 if GSV:
     if not re.fullmatch(r'[A-Za-z0-9_-]+', GSV): sys.exit('site.json：google_site_verification 只能是驗證碼本身（content="…" 引號內的文字）')
     seo.append(f'<meta name="google-site-verification" content="{GSV}">')
@@ -83,7 +86,7 @@ ld = {'@context': 'https://schema.org', '@type': 'DefinedTermSet', 'name': '產�
       'hasDefinedTerm': [dict({'@type': 'DefinedTerm', 'name': x['n'], 'description': x['s']},
                               **({'url': f"{BASE}/#{x['id']}"} if BASE else {})) for x in data]}
 if BASE: ld['url'] = BASE + '/'
-seo.append('<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + '</script>')
+if not NOINDEX: seo.append('<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + '</script>')
 out = put(out, '<!--SEO_START-->', '<!--SEO_END-->', '\n' + '\n'.join(seo) + '\n')
 # 3b. 流量分析（GoatCounter，免 Cookie）
 if GC and not re.fullmatch(r'[a-z0-9-]+', GC): sys.exit('site.json：goatcounter 只填代碼（例 chanxian），不要整個網址')
@@ -96,12 +99,12 @@ out = put(out, '<!--REPORT_START-->', '<!--REPORT_END-->', rep)
 # 5. sitemap.xml、robots.txt
 t = datetime.date.today()
 files = {}
-if BASE:
+if BASE and not NOINDEX:
     files['sitemap.xml'] = ('<?xml version="1.0" encoding="UTF-8"?>\n'
                             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                             f'  <url><loc>{BASE}/</loc><lastmod>{t.isoformat()}</lastmod></url>\n'
                             '</urlset>\n')
-files['robots.txt'] = 'User-agent: *\nAllow: /\n' + (f'Sitemap: {BASE}/sitemap.xml\n' if BASE else '')
+files['robots.txt'] = 'User-agent: *\nAllow: /\n' + (f'Sitemap: {BASE}/sitemap.xml\n' if 'sitemap.xml' in files else '')
 
 if CHECK:
     stale = []
@@ -111,6 +114,7 @@ if CHECK:
         old = open(p, encoding='utf-8').read() if os.path.exists(p) else None
         cmp = (lambda s: re.sub(r'<lastmod>[^<]*</lastmod>', '', s or ''))
         if old is None or cmp(old) != cmp(content): stale.append(name)
+    if 'sitemap.xml' not in files and os.path.exists(os.path.join(ROOT, 'sitemap.xml')): stale.append('sitemap.xml（應刪除）')
     if stale: sys.exit('資料正確，但以下檔案不是最新，請執行 python3 build.py：' + '、'.join(stale))
     print(f'檢查通過：{len(data)} 筆，檔案皆為最新')
     sys.exit(0)
@@ -119,7 +123,7 @@ out = re.sub(r'const UPDATED="[^"]*"', f'const UPDATED="{t.year}年{t.month}月{
 open(PAGE, 'w', encoding='utf-8').write(out)
 for name, content in files.items():
     open(os.path.join(ROOT, name), 'w', encoding='utf-8').write(content)
-if not BASE and os.path.exists(os.path.join(ROOT, 'sitemap.xml')):
+if 'sitemap.xml' not in files and os.path.exists(os.path.join(ROOT, 'sitemap.xml')):
     os.remove(os.path.join(ROOT, 'sitemap.xml'))
 print(f'完成：{len(data)} 筆，最後更新 {t}' + ('' if BASE else '（site.json 尚未設定 base_url，略過 sitemap 與網址標籤）')
       + ('' if REPORT else '（未設定 report_url，不顯示回報連結）'))

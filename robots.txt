@@ -1,3 +1,2 @@
 User-agent: *
 Allow: /
-Sitemap: https://xieliutp036.github.io/XIELIUTP036/sitemap.xml
