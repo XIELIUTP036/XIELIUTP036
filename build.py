@@ -3,7 +3,7 @@
   python3 build.py            讀 data.csv → 更新 index.html（資料、noscript 名詞列表、最後更新日期、SEO 標籤、回報連結）
                               並產生 sitemap.xml、robots.txt
   python3 build.py --check    只驗證資料與檢查 index.html 是否已是最新，不寫入任何檔案（CI 用）
-網站設定在 site.json：base_url（正式網址，例 https://帳號.github.io/repo）、report_url（回報缺漏名詞表單網址）、google_site_verification（Search Console 驗證碼）。"""
+網站設定在 site.json：base_url（正式網址，例 https://帳號.github.io/repo）、report_url（回報缺漏名詞表單網址）、google_site_verification（Search Console 驗證碼）、goatcounter（流量分析代碼）。"""
 import csv, json, re, sys, html, datetime, os
 
 CHECK = '--check' in sys.argv
@@ -18,6 +18,7 @@ if os.path.exists(os.path.join(ROOT, 'site.json')):
 BASE = (site.get('base_url') or '').strip().rstrip('/')
 REPORT = (site.get('report_url') or '').strip()
 GSV = (site.get('google_site_verification') or '').strip()
+GC = (site.get('goatcounter') or '').strip()
 
 h = open(PAGE, encoding='utf-8').read()
 m = re.search(r'(<script type="application/json" id="glossary-data">)(.*?)(</script>)', h, re.S)
@@ -84,6 +85,10 @@ ld = {'@context': 'https://schema.org', '@type': 'DefinedTermSet', 'name': '產�
 if BASE: ld['url'] = BASE + '/'
 seo.append('<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + '</script>')
 out = put(out, '<!--SEO_START-->', '<!--SEO_END-->', '\n' + '\n'.join(seo) + '\n')
+# 3b. 流量分析（GoatCounter，免 Cookie）
+if GC and not re.fullmatch(r'[a-z0-9-]+', GC): sys.exit('site.json：goatcounter 只填代碼（例 chanxian），不要整個網址')
+ana = (f'\n<script data-goatcounter="https://{GC}.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>\n' if GC else '')
+out = put(out, '<!--ANALYTICS_START-->', '<!--ANALYTICS_END-->', ana)
 # 4. 回報缺漏名詞連結
 rep = (f'<p><a href="{html.escape(REPORT)}" target="_blank" rel="noopener">回報缺漏名詞</a></p>' if REPORT else '')
 out = put(out, '<!--REPORT_START-->', '<!--REPORT_END-->', rep)
