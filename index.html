@@ -22,7 +22,6 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <!--SEO_END-->
-<!--ANALYTICS_START--><!--ANALYTICS_END-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
@@ -224,15 +223,10 @@ function render(){
   let list=DATA.filter(x=>(cat==="全部"||x.c===cat)&&(!k||hay(x).includes(k)||(alt&&hay(x).includes(alt))));
   if(k)list=list.map((x,i)=>[x,score(x,k),i]).sort((a,b)=>a[1]-b[1]||a[2]-b[2]).map(a=>a[0]);
   $("#live").textContent=(k?"共找到 ":"共 ")+list.length+" 筆";
-  trackSearch(K,list.length);
   if(!list.length){$("#out").innerHTML='<div class="empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><p>找不到符合的名詞，換個關鍵字試試。</p><button class="chip" id="rst">清除搜尋</button></div>';return}
   $("#out").innerHTML=CATS.map(c=>{const g=list.filter(x=>x.c===c);return g.length?`<h2 style="${acc(c)}">${esc(c)}</h2>`+[...new Set(g.map(x=>x.sec||""))].map(s=>(s?`<h3 class="sec" style="${acc(c)}">${esc(s)}</h3>`:"")+`<div class="grid">${g.filter(x=>(x.sec||"")===s).map(card).join("")}</div>`).join(""):""}).join("");
 }
-/* 流量分析（GoatCounter）：只記錄搜尋字、搜不到的字、展開的名詞；不含個人資料。未設定 site.json 的 goatcounter 時不送出任何資料 */
-function track(path,title){try{window.goatcounter&&window.goatcounter.count&&window.goatcounter.count({path:path,title:title||path,event:true})}catch(e){}}
-let lastQ="",tq;
-function trackSearch(k,n){clearTimeout(tq);if(!k)return;tq=setTimeout(()=>{if(k===lastQ)return;lastQ=k;track((n?"搜尋/":"搜不到/")+k.slice(0,40))},1500)}
-function setOpen(c,o){if(o&&!c.classList.contains("open")){const t=c.querySelector(".th");track("展開/"+c.id,t?t.textContent.trim():c.id)}c.classList.toggle("open",o);const b=c.querySelector(".th");b&&b.setAttribute("aria-expanded",o)}
+function setOpen(c,o){c.classList.toggle("open",o);const b=c.querySelector(".th");b&&b.setAttribute("aria-expanded",o)}
 function fade(){const o=$("#out");o.classList.remove("fade");void o.offsetWidth;o.classList.add("fade")}
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),1800)}
 async function copy(id){const u=location.href.split("#")[0]+"#"+id;try{await navigator.clipboard.writeText(u);toast("已複製連結")}catch(e){location.hash=id;toast("請從網址列複製連結")}}
